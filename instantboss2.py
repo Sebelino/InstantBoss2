@@ -1,5 +1,5 @@
 import winsound,sys,time
-from os import system
+import os
 
 def beep(sound):
     winsound.PlaySound('%s.wav' % sound, winsound.SND_FILENAME)
@@ -20,5 +20,7 @@ if not len(sys.argv) == 3:
 work_secs = 60*int(sys.argv[1])
 break_secs = 60*int(sys.argv[2])
 while True:
+    os.startfile(r"C:\Users\Sebastian\Music\Let Me Sleep Please.mp3")
     countdown("Get to work!",work_secs,"work")
+    os.startfile(r"C:\Users\Sebastian\Music\Hallucination.mp3")
     countdown("Chill out.",break_secs,"break")
