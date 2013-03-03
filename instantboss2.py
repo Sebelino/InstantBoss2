@@ -8,7 +8,7 @@ def countdown(message,seconds,file):
     print(message)
     beep(file)
     for i in range(seconds):
-        system("title %d - %s"% (seconds-i,message))
+        os.system("title %d - %s"% (seconds-i,message))
         time.sleep(1)
 
 # The number of arguments has to be 2.
