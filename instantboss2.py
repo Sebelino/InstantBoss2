@@ -21,5 +21,5 @@ if not len(sys.argv) == 3:
 work_secs = 60*int(sys.argv[1])
 break_secs = 60*int(sys.argv[2])
 while True:
-    countdown("Get to work!",work_secs,"workorg")
-    countdown("Chill out.",break_secs,"breakorg")
+    countdown("Get to work!",work_secs,"work")
+    countdown("Chill out.",break_secs,"break")
