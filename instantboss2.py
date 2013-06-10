@@ -14,14 +14,11 @@ def countdown(message,seconds,file):
         print (seconds-i)
         time.sleep(1)
 
-# The number of arguments has to be 2.
-if not len(sys.argv) == 3:
-    print("Please apply 2 parameters: the number of work minutes and the number of break "\
-            "minutes.")
+if len(sys.argv) <= 1:
+    print("Please apply 1 or more arguments.")
     sys.exit()
 
-work_secs = 60*int(sys.argv[1])
-break_secs = 60*int(sys.argv[2])
+argument_count = len(sys.argv)-1
 while True:
-    countdown("Get to work!",work_secs,"work.wav")
-    countdown("Chill out.",break_secs,"break.wav")
+    for i in range(1,argument_count+1):
+        countdown("Initiate phase %s."% i ,60*int(sys.argv[i]),"%s.wav"% i)
