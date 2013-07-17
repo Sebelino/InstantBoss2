@@ -45,4 +45,5 @@ if xmobar_yes:
 
 while True:
     for i in range(0,argument_count):
-        countdown("Initiate phase %s."% (i+1) ,60*int(intervals[i]),"%s.wav"% (i+1))
+        countdown("Initiate phase %s."% (i+1)
+           ,60*int(intervals[i]),os.path.join(working_dir,"%s.wav"% (i+1)))
