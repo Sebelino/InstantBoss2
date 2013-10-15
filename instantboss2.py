@@ -1,3 +1,4 @@
+#!/bin/python2
 import pygame,sys,time,thread,os
 
 working_dir = os.path.dirname(os.path.realpath(__file__))
@@ -21,9 +22,9 @@ intervals = filter(lambda x: x.isdigit(),sys.argv[1:])
 
 if not intervals:
     print("Usage:")
-    print("python2 %s [OPTION...] [xmobar]"% os.path.join(working_dir,sys.argv[0]))
+    print("python2 %s [OPTION...] [xmobar]"% sys.argv[0])
     print("Example:")
-    print("python2 %s 25 5"% os.path.join(working_dir,sys.argv[0]))
+    print("python2 %s 25 5"% sys.argv[0])
     print("toggles between a period of 25 minutes and a period of 5 minutes.")
     sys.exit()
 
