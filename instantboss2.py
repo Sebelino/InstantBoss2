@@ -1,13 +1,10 @@
 #!/bin/python2
-import pygame,sys,time,thread,os
+import sys,time,thread,os
 
 working_dir = os.path.dirname(os.path.realpath(__file__))
 
-pygame.init()
-
 def beep(sound):
-    pygame.mixer.music.load(sound)
-    pygame.mixer.music.play()
+    os.system("mplayer %s"% sound)
 
 def countdown(message,seconds,file):
     print(message)
