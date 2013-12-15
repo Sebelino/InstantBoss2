@@ -24,6 +24,9 @@ if not intervals:
     print("python2 %s 25 5"% sys.argv[0])
     print("toggles between a period of 25 minutes and a period of 5 minutes.")
     sys.exit()
+if '0' in intervals:
+    print("Don't be stupid.")
+    sys.exit()
 
 argument_count = len(intervals)
 
