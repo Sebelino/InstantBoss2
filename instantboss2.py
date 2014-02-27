@@ -15,7 +15,10 @@ def countdown(message,seconds,file):
 
 xmobar_yes = "xmobar" in sys.argv[1:]
 
-intervals = filter(lambda x: x.isdigit(),sys.argv[1:])
+is_seconds = "s" in "".join(sys.argv[1:])
+time_factor = 1 if is_seconds else 60
+filtered_input = [s.replace("s","") for s in sys.argv[1:]]
+intervals = filter(lambda x: x.isdigit(),filtered_input)
 
 if not intervals:
     print("Usage:")
@@ -34,7 +37,7 @@ if xmobar_yes:
     f = open(os.path.join(working_dir,"dat","current_time"),"r+")
     sounds = [os.path.join(working_dir,"%s.wav"% i) for i in range(1,len(intervals)+1)]
     while True:
-        for (interval_time,sound) in zip([str(60*int(m)) for m in intervals],sounds):
+        for (interval_time,sound) in zip([str(time_factor*int(m)) for m in intervals],sounds):
             beep(sound)
             f.write(interval_time)
             f.seek(0)
@@ -47,4 +50,4 @@ if xmobar_yes:
 while True:
     for i in range(0,argument_count):
         countdown("Initiate phase %s."% (i+1)
-           ,60*int(intervals[i]),os.path.join(working_dir,"%s.wav"% (i+1)))
+           ,time_factor*int(intervals[i]),os.path.join(working_dir,"%s.wav"% (i+1)))
