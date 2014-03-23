@@ -1,5 +1,6 @@
 #!/bin/python2
 import sys,time,thread,os,argparse,select
+from pprint import pprint
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-x","--xmobar",action='store_true',
@@ -70,4 +71,4 @@ while True:
             break
         starttime = currenttime(args.topic)
 
-print intervals
+pprint(intervals)
