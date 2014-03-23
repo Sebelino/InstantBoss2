@@ -77,7 +77,7 @@ while True:
                 break
             starttime = currenttime(args.topic)
 
-intervals_str = '\n'.join(["%s - %s"% (x,y) for [x,y] in intervals])
+intervals_str = '\n'.join(["%s - %s"% (start,stop) for [start,stop] in intervals])+'\n'
 pprint(intervals)
 if args.output:
     with open("./dat/%s"% args.output,"a") as intervalfile:
