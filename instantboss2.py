@@ -1,4 +1,9 @@
 #!/bin/python2
+
+# To pause the countdown, press enter.
+# To resume from the pause, press enter again.
+# To quit at any time, enter any string containing non-whitespace and press enter.
+
 import sys,time,thread,os,argparse,select
 from pprint import pprint
 
@@ -50,7 +55,6 @@ if args.xmobar:
 
 intervals = []
 iteration = 0
-quitbutton = 'q'
 starttime = currenttime(args.topic)
 while True:
     if not args.repeat and iteration == 1:
@@ -60,15 +64,15 @@ while True:
         print("Iteration %s"% iteration)
     thread.start_new_thread(beep,("%s.wav"% args.audio,))
     response = countdown(interval_seconds)
-    if response or response == '':
+    if response != None:
         stoptime = currenttime(args.topic)
         intervals.append([starttime,stoptime])
-    if response == quitbutton:
-        break
-    elif response == '':
-        response2 = sys.stdin.readline().strip()
-        if response2 == quitbutton:
+        if response:
             break
-        starttime = currenttime(args.topic)
+        else:
+            response2 = sys.stdin.readline().strip()
+            if response2:
+                break
+            starttime = currenttime(args.topic)
 
 pprint(intervals)
