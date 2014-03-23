@@ -1,5 +1,5 @@
 #!/bin/python2
-import sys,time,thread,os,argparse
+import sys,time,thread,os,argparse,select
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-x","--xmobar",action='store_true',
@@ -17,21 +17,21 @@ working_dir = os.path.dirname(os.path.realpath(__file__))
 def beep(sound):
     os.system("mplayer %s &> /dev/null"% sound)
 
-def countdown(message,seconds,file):
-    print(message)
-    thread.start_new_thread(beep,(file,))
-    for i in range(seconds):
+# @return A string that was entered, or None if no string was entered.
+def countdown(seconds):
+    for i in xrange(seconds):
         print (seconds-i)
-        time.sleep(1)
+        (inp,o,e) = select.select([sys.stdin],[],[],1)
+        if inp:
+            return sys.stdin.readline().strip()
+    return None
 
-if not args.seconds and not args.minutes:
-    print "Parameters missing. Rerun with --help for details."
-    sys.exit()
+def currenttime(topic=''):
+    appendix = " - "+topic if topic else ""
+    return time.strftime("%Y-%m-%d %H:%M:%S")+appendix
+
 interval_seconds = 60*(args.minutes if args.minutes else 0)+(args.seconds if args.seconds else 0)
-
-if not interval_seconds:
-    print("Don't be stupid.")
-    sys.exit()
+interval_seconds = interval_seconds if interval_seconds else sys.maxint
 
 if args.xmobar:
     f = open(os.path.join(working_dir,"dat","current_time"),"r+")
@@ -47,11 +47,27 @@ if args.xmobar:
                 f.seek(0)
                 time.sleep(1)
 
+intervals = []
 iteration = 0
+quitbutton = 'q'
+starttime = currenttime(args.topic)
 while True:
     if not args.repeat and iteration == 1:
         break
     iteration += 1
-    countdown("Iteration %s."% iteration,
-        interval_seconds,os.path.join(working_dir,"%s.wav"% args.audio))
-    print time.strftime("%Y-%m-%d %H:%M:%S")+(" - "+args.topic if args.topic else "")
+    if args.repeat:
+        print("Iteration %s"% iteration)
+    thread.start_new_thread(beep,("%s.wav"% args.audio,))
+    response = countdown(interval_seconds)
+    if response or response == '':
+        stoptime = currenttime(args.topic)
+        intervals.append([starttime,stoptime])
+    if response == quitbutton:
+        break
+    elif response == '':
+        response2 = sys.stdin.readline().strip()
+        if response2 == quitbutton:
+            break
+        starttime = currenttime(args.topic)
+
+print intervals
