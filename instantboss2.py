@@ -4,7 +4,6 @@
 # To quit, enter any string containing non-whitespace and press enter.
 
 import sys,time,thread,os,argparse,select
-from pprint import pprint,pformat
 
 parser = argparse.ArgumentParser()
 #parser.add_argument("-x","--xmobar",action='store_true',
@@ -21,6 +20,7 @@ parser.add_argument("-o","--output",type=str,
 args = parser.parse_args()
 
 working_dir = os.path.dirname(os.path.realpath(__file__))
+data_dir = "dat"
 
 def beep(sound):
     os.system("mplayer %s &> /dev/null"% sound)
@@ -42,7 +42,7 @@ interval_seconds = 60*(args.minutes if args.minutes else 0)+(args.seconds if arg
 interval_seconds = interval_seconds if interval_seconds else sys.maxint
 
 #if args.xmobar:
-#    f = open(os.path.join(working_dir,"dat","current_time"),"r+")
+#    f = open(os.path.join(working_dir,data_dir,"current_time"),"r+")
 #    sounds = [os.path.join(working_dir,"%s.wav"% i) for i in range(1,len(intervals)+1)]
 #    while True:
 #        for (interval_time,sound) in zip([str(time_factor*int(m)) for m in intervals],sounds):
@@ -78,7 +78,7 @@ while True:
             starttime = currenttime(args.topic)
 
 intervals_str = '\n'.join(["%s - %s"% (start,stop) for [start,stop] in intervals])+'\n'
-pprint(intervals)
+print intervals_str
 if args.output:
-    with open("./dat/%s"% args.output,"a") as intervalfile:
+    with open("./%s/%s"% (data_dir,args.output),"a") as intervalfile:
         intervalfile.write(intervals_str)
