@@ -14,9 +14,9 @@ parser.add_argument("-r","--repeat",action='store_true',help="Reset the timer wh
 parser.add_argument("-t","--topic",type=str,help="The subject you are working on.")
 parser.add_argument("-a","--audio",default='1',metavar='file',type=str,
     help="The name of the .wav file, excluding the extension. \"1\" by default.")
-parser.add_argument("-o","--output",type=str,
+parser.add_argument("-o","--output",type=str,metavar='file',default='schedule',
     help="The file to which the output should be written. If not specified, the output will\
-    not be written to any file.")
+    be written to ./dat/schedule.")
 args = parser.parse_args()
 
 working_dir = os.path.dirname(os.path.realpath(__file__))
@@ -79,6 +79,5 @@ while True:
 
 intervals_str = '\n'.join(["%s - %s"% (start,stop) for [start,stop] in intervals])+'\n'
 print intervals_str
-if args.output:
-    with open("./%s/%s"% (data_dir,args.output),"a") as intervalfile:
-        intervalfile.write(intervals_str)
+with open("./%s/%s"% (data_dir,args.output),"a") as intervalfile:
+    intervalfile.write(intervals_str)
