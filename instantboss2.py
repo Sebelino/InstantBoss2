@@ -66,7 +66,6 @@ while True:
     iteration += 1
     if args.repeat:
         print("Iteration %s"% iteration)
-    thread.start_new_thread(beep,("%s.wav"% args.audio,))
     response = countdown(interval_seconds)
     if response is not None:
         stoptime = currenttime(args.topic)
@@ -78,6 +77,7 @@ while True:
             if response2:
                 break
             starttime = currenttime(args.topic)
+    thread.start_new_thread(beep,("%s.wav"% args.audio,))
 if not response and not args.repeat:
     stoptime = currenttime(args.topic)
     intervals.append([starttime,stoptime])
