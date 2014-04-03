@@ -12,7 +12,7 @@ parser.add_argument("-s","--seconds",type=int,help="S, where 60*M+S is the numbe
 parser.add_argument("-m","--minutes",type=int,help="M, where 60*M+S is the number of seconds between each interval.")
 parser.add_argument("-r","--repeat",action='store_true',help="Reset the timer when it reaches zero.")
 parser.add_argument("-t","--topic",type=str,help="The subject you are working on.")
-parser.add_argument("-a","--audio",default='1',metavar='file',type=str,
+parser.add_argument("-a","--audio",default='sound/1',metavar='file',type=str,
     help="The name of the .wav file, excluding the extension. \"1\" by default.")
 parser.add_argument("-o","--output",type=str,metavar='file',default='schedule',
     help="The file to which the output should be written. If not specified, the output will\
