@@ -1,8 +1,5 @@
 #!/bin/python2
 
-# To pause/resume the countdown, press enter.
-# To quit, enter any string containing non-whitespace and press enter.
-
 import sys,time,thread,os,argparse,select
 import csv
 
@@ -11,7 +8,7 @@ parser = argparse.ArgumentParser()
 #    help="Enable this if xmobar is installed and you want the timer in xmobar to be updated.")
 parser.add_argument("-s","--seconds",type=int,help="S, where 60*M+S is the number of seconds between each interval.")
 parser.add_argument("-m","--minutes",type=int,help="M, where 60*M+S is the number of seconds between each interval.")
-parser.add_argument("-r","--repeat",action='store_true',help="Reset the timer when it reaches zero.")
+#parser.add_argument("-r","--repeat",action='store_true',help="Reset the timer when it reaches zero.")
 parser.add_argument("-t","--topic",type=str,help="The subject you are working on.")
 parser.add_argument("-a","--audio",default='sound/1',metavar='file',type=str,
     help="The name of the .wav file, excluding the extension. \"1\" by default.")
@@ -39,7 +36,7 @@ def currenttime():
     return time.strftime("%Y-%m-%d %H:%M:%S")
 
 def writecsv(table,fname):
-    with open(os.path.join(data_dir,fname),'wb') as csvfile:
+    with open(os.path.join(data_dir,fname),'a') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(table)
 
@@ -63,31 +60,10 @@ interval_seconds = interval_seconds if interval_seconds else sys.maxint
 intervals = []
 iteration = 0
 starttime = currenttime()
-response = None
-response2 = None
-while True:
-    if not args.repeat and iteration == 1:
-        break
-    iteration += 1
-    if args.repeat:
-        print("Iteration %s"% iteration)
-    response = countdown(interval_seconds)
-    if response is not None:
-        stoptime = currenttime()
-        if starttime != stoptime:
-            intervals.append((starttime,stoptime,args.topic))
-        if response:
-            break
-        else:
-            response2 = sys.stdin.readline().strip()
-            if response2:
-                break
-            starttime = currenttime()
-    thread.start_new_thread(beep,("%s.wav"% args.audio,))
-if not response and not args.repeat:
-    stoptime = currenttime()
-    if starttime != stoptime:
-        intervals.append((starttime,stoptime,args.topic))
+response = countdown(interval_seconds)
+stoptime = currenttime()
+intervals.append((starttime,stoptime,args.topic))
+thread.start_new_thread(beep,("%s.wav"% args.audio,))
 
 print intervals
 writecsv(intervals,args.output)
