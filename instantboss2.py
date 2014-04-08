@@ -4,6 +4,7 @@
 # To quit, enter any string containing non-whitespace and press enter.
 
 import sys,time,thread,os,argparse,select
+import csv
 
 parser = argparse.ArgumentParser()
 #parser.add_argument("-x","--xmobar",action='store_true',
@@ -14,9 +15,9 @@ parser.add_argument("-r","--repeat",action='store_true',help="Reset the timer wh
 parser.add_argument("-t","--topic",type=str,help="The subject you are working on.")
 parser.add_argument("-a","--audio",default='sound/1',metavar='file',type=str,
     help="The name of the .wav file, excluding the extension. \"1\" by default.")
-parser.add_argument("-o","--output",type=str,metavar='file',default='schedule',
+parser.add_argument("-o","--output",type=str,metavar='file',default='schedule.csv',
     help="The file to which the output should be written. If not specified, the output will\
-    be written to ./dat/schedule.")
+    be written to ./dat/schedule.csv.")
 args = parser.parse_args()
 
 working_dir = os.path.dirname(os.path.realpath(__file__))
@@ -34,9 +35,13 @@ def countdown(seconds):
             return sys.stdin.readline().strip()
     return None
 
-def currenttime(topic=''):
-    appendix = " - "+topic if topic else ""
-    return time.strftime("%Y-%m-%d %H:%M:%S")+appendix
+def currenttime():
+    return time.strftime("%Y-%m-%d %H:%M:%S")
+
+def writecsv(table,fname):
+    with open(os.path.join(data_dir,fname),'wb') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(table)
 
 interval_seconds = 60*(args.minutes if args.minutes else 0)+(args.seconds if args.seconds else 0)
 interval_seconds = interval_seconds if interval_seconds else sys.maxint
@@ -57,7 +62,7 @@ interval_seconds = interval_seconds if interval_seconds else sys.maxint
 
 intervals = []
 iteration = 0
-starttime = currenttime(args.topic)
+starttime = currenttime()
 response = None
 response2 = None
 while True:
@@ -68,21 +73,22 @@ while True:
         print("Iteration %s"% iteration)
     response = countdown(interval_seconds)
     if response is not None:
-        stoptime = currenttime(args.topic)
-        intervals.append([starttime,stoptime])
+        stoptime = currenttime()
+        if starttime != stoptime:
+            intervals.append((starttime,stoptime,args.topic))
         if response:
             break
         else:
             response2 = sys.stdin.readline().strip()
             if response2:
                 break
-            starttime = currenttime(args.topic)
+            starttime = currenttime()
     thread.start_new_thread(beep,("%s.wav"% args.audio,))
 if not response and not args.repeat:
-    stoptime = currenttime(args.topic)
-    intervals.append([starttime,stoptime])
+    stoptime = currenttime()
+    if starttime != stoptime:
+        intervals.append((starttime,stoptime,args.topic))
 
-intervals_str = '\n'.join(["%s - %s"% (start,stop) for [start,stop] in intervals])+'\n'
-print intervals_str
-with open("./%s/%s"% (data_dir,args.output),"a") as intervalfile:
-    intervalfile.write(intervals_str)
+print intervals
+writecsv(intervals,args.output)
+
