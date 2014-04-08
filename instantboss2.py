@@ -33,7 +33,8 @@ def countdown(seconds):
     return None
 
 def currenttime():
-    return time.strftime("%Y-%m-%d %H:%M:%S")
+    fmt = "%Y-%m-%dT%H:%M:%S"
+    return time.strftime(fmt)
 
 def writecsv(table,fname):
     with open(os.path.join(data_dir,fname),'a') as csvfile:
