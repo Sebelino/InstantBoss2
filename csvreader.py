@@ -2,13 +2,13 @@
 
 import sys,time,thread,os,argparse,select,csv,datetime
 
-def deltas(path):
+""" :returns A processed representation of the csv file. """
+def readcsv(path):
     with open(path,'r') as csvfile:
         reader = csv.reader(csvfile)
         fmt = "%Y-%m-%dT%H:%M:%S"
-        timeparse = lambda t: datetime.datetime.fromtimestamp(time.mktime(time.strptime(t,fmt)))
-        intervals = [(timeparse(stop)-timeparse(start),topic) for (start,stop,topic) in reader]
-        return intervals
+        totime = lambda t: datetime.datetime.fromtimestamp(time.mktime(time.strptime(t,fmt)))
+        return [(totime(a),totime(b),s) for (a,b,s) in reader]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-i","--input",type=str,metavar='file',default='schedule.csv',
@@ -24,7 +24,8 @@ working_dir = os.path.dirname(os.path.realpath(__file__))
 data_dir = "dat"
 path = os.path.join(data_dir,args.input)
 
-intervals = deltas(path)
+intervals = readcsv(path)
+intervals = [(b-a,s) for (a,b,s) in intervals]
 if args.topic:
     intervals = [(t,s) for (t,s) in intervals if s == args.topic]
 datesum = datetime.timedelta(0)
