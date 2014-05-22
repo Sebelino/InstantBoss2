@@ -15,7 +15,9 @@ parser.add_argument("-i","--input",type=str,metavar='file',default='schedule.csv
     help="The file which is to be read. If not specified, the output will\
     be written to ./dat/schedule.csv.")
 parser.add_argument("-t","--topic",type=str,metavar='topic',
-    help="The topic to filter on")
+    help="The topic to filter on.")
+parser.add_argument("-p","--period",type=str,metavar='period',
+    help="The time period. Can be \"today\".")
 parser.add_argument("-s","--sum",action='store_true',
     help="Sum the results.")
 args = parser.parse_args()
@@ -25,6 +27,8 @@ data_dir = "dat"
 path = os.path.join(data_dir,args.input)
 
 intervals = readcsv(path)
+if args.period == "today":
+    intervals = [(a,t,s) for (a,t,s) in intervals if a.date() == datetime.datetime.now().date()]
 intervals = [(a.ctime(),b-a,s) for (a,b,s) in intervals]
 if args.topic:
     intervals = [(a,t,s) for (a,t,s) in intervals if s == args.topic]
@@ -34,3 +38,4 @@ for (a,t,s) in intervals:
 output = [[datesum]] if args.sum else intervals
 for row in output:
     print ' | '.join([str(cell) for cell in row])
+
