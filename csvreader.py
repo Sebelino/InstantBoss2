@@ -25,12 +25,12 @@ data_dir = "dat"
 path = os.path.join(data_dir,args.input)
 
 intervals = readcsv(path)
-intervals = [(b-a,s) for (a,b,s) in intervals]
+intervals = [(a.ctime(),b-a,s) for (a,b,s) in intervals]
 if args.topic:
-    intervals = [(t,s) for (t,s) in intervals if s == args.topic]
+    intervals = [(a,t,s) for (a,t,s) in intervals if s == args.topic]
 datesum = datetime.timedelta(0)
-for (t,s) in intervals:
+for (a,t,s) in intervals:
     datesum += t
 output = [[datesum]] if args.sum else intervals
 for row in output:
-    print ' '.join([str(cell) for cell in row])
+    print ' | '.join([str(cell) for cell in row])
