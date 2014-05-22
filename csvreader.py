@@ -14,8 +14,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i","--input",type=str,metavar='file',default='schedule.csv',
     help="The file which is to be read. If not specified, the output will\
     be written to ./dat/schedule.csv.")
-parser.add_argument("-f","--subject",type=str,metavar='subject',
-    help="The subject to filter on")
+parser.add_argument("-t","--topic",type=str,metavar='topic',
+    help="The topic to filter on")
 parser.add_argument("-s","--sum",action='store_true',
     help="Sum the results.")
 args = parser.parse_args()
@@ -25,8 +25,8 @@ data_dir = "dat"
 path = os.path.join(data_dir,args.input)
 
 intervals = deltas(path)
-if args.subject:
-    intervals = [(t,s) for (t,s) in intervals if s == args.subject]
+if args.topic:
+    intervals = [(t,s) for (t,s) in intervals if s == args.topic]
 datesum = datetime.timedelta(0)
 for (t,s) in intervals:
     datesum += t
