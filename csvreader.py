@@ -27,8 +27,11 @@ data_dir = "dat"
 path = os.path.join(data_dir,args.input)
 
 intervals = readcsv(path)
-if args.period == "today":
-    intervals = [(a,t,s) for (a,t,s) in intervals if a.date() == datetime.datetime.now().date()]
+if args.period:
+    if args.period == "today":
+        intervals = [(a,t,s) for (a,t,s) in intervals if a.date() == datetime.datetime.now().date()]
+    elif args.period == "yesterday":
+        intervals = [(a,t,s) for (a,t,s) in intervals if a.date() == datetime.datetime.now().date()-datetime.timedelta(days=1)]
 intervals = [(a.ctime(),b-a,s) for (a,b,s) in intervals]
 if args.topic:
     intervals = [(a,t,s) for (a,t,s) in intervals if s == args.topic]
