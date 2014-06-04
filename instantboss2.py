@@ -2,14 +2,14 @@
 
 import sys,time,thread,os,argparse,select
 import csv
+import re
 
 parser = argparse.ArgumentParser()
 #parser.add_argument("-x","--xmobar",action='store_true',
 #    help="Enable this if xmobar is installed and you want the timer in xmobar to be updated.")
-parser.add_argument("-s","--seconds",type=int,help="S, where 60*M+S is the number of seconds between each interval.")
-parser.add_argument("-m","--minutes",type=int,help="M, where 60*M+S is the number of seconds between each interval.")
+parser.add_argument("-t","--time",type=str,help="H:M:S, where H=hours, M=minutes and S=seconds.")
 #parser.add_argument("-r","--repeat",action='store_true',help="Reset the timer when it reaches zero.")
-parser.add_argument("-t","--topic",type=str,help="The subject you are working on.")
+parser.add_argument("-s","--subject",type=str,help="The subject you are working on.")
 parser.add_argument("-a","--audio",default='sound/1',metavar='file',type=str,
     help="The name of the .wav file, excluding the extension. \"1\" by default.")
 parser.add_argument("-o","--output",type=str,metavar='file',default='schedule.csv',
@@ -41,7 +41,11 @@ def writecsv(table,fname):
         writer = csv.writer(csvfile)
         writer.writerows(table)
 
-interval_seconds = 60*(args.minutes if args.minutes else 0)+(args.seconds if args.seconds else 0)
+if not re.match('\d*:\d*:\d*',args.time):
+    print "Incorrectly formatted time. See --help."
+    sys.exit()
+(hs,ms,ss) = args.time.split(':')
+interval_seconds = (int(hs) if hs else 0)*60*60+(int(ms) if ms else 0)*60+(int(ss) if ss else 0)
 interval_seconds = interval_seconds if interval_seconds else sys.maxint
 
 #if args.xmobar:
@@ -63,7 +67,7 @@ iteration = 0
 starttime = currenttime()
 response = countdown(interval_seconds)
 stoptime = currenttime()
-intervals.append((starttime,stoptime,args.topic))
+intervals.append((starttime,stoptime,args.subject))
 thread.start_new_thread(beep,("%s.wav"% args.audio,))
 
 print intervals
