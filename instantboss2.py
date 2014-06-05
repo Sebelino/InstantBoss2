@@ -23,8 +23,10 @@ def beep(sound):
 
 # @return A string that was entered, or None if no string was entered.
 def countdown(seconds):
-    endtime = datetime.datetime.now()+datetime.timedelta(seconds=seconds)
-    appendix = ' ends=%s'% str(endtime.strftime('%H:%M:%S')) if seconds < 100800 else ''
+    appendix = ''
+    if seconds < 100800:
+        endtime = datetime.datetime.now()+datetime.timedelta(seconds=seconds)
+        appendix = ' ends=%s'% str(endtime.strftime('%H:%M:%S'))
     for i in xrange(seconds):
         print (str(seconds-i)+appendix)
         (inp,o,e) = select.select([sys.stdin],[],[],1)
