@@ -26,9 +26,9 @@ def countdown(seconds):
     appendix = ''
     if seconds < 100800:
         endtime = datetime.datetime.now()+datetime.timedelta(seconds=seconds)
-        appendix = ' ends=%s'% str(endtime.strftime('%H:%M:%S'))
+        appendix = '\tends=%s'% str(endtime.strftime('%H:%M:%S'))
     for i in xrange(seconds):
-        print (str(seconds-i)+appendix)
+        print (str(seconds-i)+appendix+'\t%d %%'% int(100.0*i/seconds))
         (inp,o,e) = select.select([sys.stdin],[],[],1)
         if inp:
             return sys.stdin.readline().strip()
