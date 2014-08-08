@@ -5,18 +5,31 @@ import sys,time,thread,os,argparse,select,csv,re,datetime
 def beep(sound):
     os.system("mplayer %s &> /dev/null"% sound)
 
-# @return A string that was entered, or None if no string was entered.
-def countdown(seconds):
+"""
+Counts down from a number of seconds to zero, printing the remaining number of seconds
+each second. Meanwhile, the user may enter some text and press enter, causing the
+function to return the entered string immediately.
+:param seconds: The number of seconds before the timer runs out.
+:param callback: A function that is called each tick. It takes two arguments: the
+                 passed and the total number of seconds.
+:return: A string that was entered, or None if no string was entered before the timer
+         ran out.
+"""
+def countdown(seconds,callback):
     appendix = ''
-    if seconds < 100800:
-        endtime = datetime.datetime.now()+datetime.timedelta(seconds=seconds)
-        appendix = '\tends=%s'% str(endtime.strftime('%H:%M:%S'))
     for i in xrange(seconds):
-        print (str(seconds-i)+appendix+'\t%d %%'% int(100.0*i/seconds))
+        callback(i,seconds)
         (inp,o,e) = select.select([sys.stdin],[],[],1)
         if inp:
             return sys.stdin.readline().strip()
     return None
+
+def tick(passed,total):
+    appendix = ''
+    if total < 100800:
+        endtime = datetime.datetime.now()+datetime.timedelta(seconds=total)
+        appendix = '\tends=%s'% str(endtime.strftime('%H:%M:%S'))
+    print (str(total-passed)+appendix+'\t%d %%'% int(100.0*passed/total))
 
 def currenttime():
     fmt = "%Y-%m-%dT%H:%M:%S"
@@ -38,7 +51,7 @@ def execute(subject,time,audio,output):
     intervals = []
     iteration = 0
     starttime = currenttime()
-    response = countdown(interval_seconds)
+    response = countdown(interval_seconds,tick)
     stoptime = currenttime()
     intervals.append((starttime,stoptime,subject))
     thread.start_new_thread(beep,(audio,))
