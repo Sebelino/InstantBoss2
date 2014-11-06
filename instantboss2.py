@@ -27,7 +27,7 @@ def countdown(seconds,callback):
 def tick(passed,total):
     appendix = ''
     if total < 100800:
-        endtime = datetime.datetime.now()-datetime.timedelta(seconds=passed)
+        endtime = datetime.datetime.now()-datetime.timedelta(seconds=passed-total)
         appendix = '\tends=%s'% str(endtime.strftime('%H:%M:%S'))
     print (str(total-passed)+appendix+'\t%d %%'% int(100.0*passed/total))
 
