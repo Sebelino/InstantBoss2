@@ -27,13 +27,13 @@ def countdown(seconds,callback):
 def tick(passed,total):
     appendix = ''
     if total < 100800:
-        endtime = datetime.datetime.now()+datetime.timedelta(seconds=total)
+        endtime = datetime.datetime.now()-datetime.timedelta(seconds=passed)
         appendix = '\tends=%s'% str(endtime.strftime('%H:%M:%S'))
     print (str(total-passed)+appendix+'\t%d %%'% int(100.0*passed/total))
 
 def currenttime():
-    fmt = "%Y-%m-%dT%H:%M:%S"
-    return time.strftime(fmt)
+    t = datetime.datetime.now()
+    return t-datetime.timedelta(microseconds=t.microsecond)
 
 def writecsv(table,fname):
     with open(fname,'a') as csvfile:
@@ -56,7 +56,8 @@ def execute(subject,time,audio,output):
     intervals.append((starttime,stoptime,subject))
     thread.start_new_thread(beep,(audio,))
 
-    print intervals
+    for entry in [(str(b-a),t,a.isoformat(),b.isoformat()) for (a,b,t) in intervals]:
+        print entry
     writecsv(intervals,output)
 
 if __name__ == '__main__':
