@@ -58,7 +58,7 @@ def execute(subject,time,audio,output):
 
     for entry in [(str(b-a),t,a.isoformat(),b.isoformat()) for (a,b,t) in intervals]:
         print entry
-    writecsv(intervals,output)
+    writecsv([(a.strftime('%Y-%m-%dT%H:%M:%S'),b.strftime('%Y-%m-%dT%H:%M:%S'),t) for (a,b,t) in intervals],output)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
